@@ -411,20 +411,24 @@ class AuthViewModel(private val context: Context) : ViewModel() {
                 authApi.bgLogin()
             }.let { bgResponse ->
                 Log.d("AuthViewModel", "bgLogin response: $bgResponse")
-                if (bgResponse.data?.success == false) {
-                    authApi.withRetry {
-                        authApi.login(email, password)
-                    }.let { response ->
-                        Log.d("AuthViewModel", "Login response: $response")
-                        storeUserData(response, isRemember)
-                        _errorMessage.value = null
-                        navController.navigate("home") {
-                            popUpTo("login") { inclusive = true }
+                if (bgResponse != null) {
+                    if (bgResponse.data?.success == false) {
+                        authApi.withRetry {
+                            authApi.login(email, password)
+                        }.let { response ->
+                            Log.d("AuthViewModel", "Login response: $response")
+                            if (response != null) {
+                                storeUserData(response, isRemember)
+                            }
+                            _errorMessage.value = null
+                            navController.navigate("home") {
+                                popUpTo("login") { inclusive = true }
+                            }
                         }
+                    } else {
+                        _errorMessage.value = "Background login failed"
+                        showMessage(context, "Background login failed")
                     }
-                } else {
-                    _errorMessage.value = "Background login failed"
-                    showMessage(context, "Background login failed")
                 }
             }
         } catch (e: Exception) {

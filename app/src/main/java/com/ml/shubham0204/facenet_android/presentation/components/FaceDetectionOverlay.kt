@@ -285,53 +285,7 @@ class FaceDetectionOverlay(
         }
     }
 
-//    fun initializeCamera(cameraFacing: Int) {
-//        this.cameraFacing = cameraFacing
-//        this.isImageTransformedInitialized = false
-//        this.isBoundingBoxTransformedInitialized = false
-//        val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
-//        val previewView = PreviewView(context)
-//        val executor = ContextCompat.getMainExecutor(context)
-//        cameraProviderFuture.addListener(
-//            {
-//                val cameraProvider = cameraProviderFuture.get()
-//                val preview =
-//                    Preview.Builder().build().also {
-//                        it.setSurfaceProvider(previewView.surfaceProvider)
-//                    }
-//                val cameraSelector =
-//                    CameraSelector.Builder().requireLensFacing(cameraFacing).build()
-//                val frameAnalyzer =
-//                    ImageAnalysis.Builder()
-//                        .setTargetAspectRatio(AspectRatio.RATIO_16_9)
-//                        .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-//                        .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
-//                        .build()
-//                frameAnalyzer.setAnalyzer(Executors.newSingleThreadExecutor(), analyzer)
-//                cameraProvider.unbindAll()
-//                cameraProvider.bindToLifecycle(
-//                    lifecycleOwner,
-//                    cameraSelector,
-//                    preview,
-//                    frameAnalyzer
-//                )
-//            },
-//            executor
-//        )
-//        if (childCount == 2) {
-//            removeView(this.previewView)
-//            removeView(this.boundingBoxOverlay)
-//        }
-//        this.previewView = previewView
-//        addView(this.previewView)
-//
-//        val boundingBoxOverlayParams =
-//            LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-//        this.boundingBoxOverlay = BoundingBoxOverlay(context)
-//        this.boundingBoxOverlay.setWillNotDraw(false)
-//        this.boundingBoxOverlay.setZOrderOnTop(true)
-//        addView(this.boundingBoxOverlay, boundingBoxOverlayParams)
-//    }
+
 fun initializeCamera(cameraFacing: Int) {
     this.cameraFacing = cameraFacing
     this.isImageTransformedInitialized = false
@@ -380,331 +334,144 @@ fun initializeCamera(cameraFacing: Int) {
     this.boundingBoxOverlay.setZOrderOnTop(true)
     addView(this.boundingBoxOverlay, boundingBoxOverlayParams)
 }
-//    private val analyzer = ImageAnalysis.Analyzer { image ->
-//        if (isProcessing) {
-//            image.close()
-//            return@Analyzer
-//        }
-//        isProcessing = true
-//
-//        // Transform android.net.Image to Bitmap
-//        frameBitmap = Bitmap.createBitmap(
-//            image.image!!.width,
-//            image.image!!.height,
-//            Bitmap.Config.ARGB_8888
-//        )
-//        frameBitmap.copyPixelsFromBuffer(image.planes[0].buffer)
-//
-//        // Configure frameHeight and frameWidth for output2overlay transformation matrix
-//        // and apply it to `frameBitmap`
-//        if (!isImageTransformedInitialized) {
-//            imageTransform = Matrix()
-//            imageTransform.apply { postRotate(image.imageInfo.rotationDegrees.toFloat()) }
-//            isImageTransformedInitialized = true
-//        }
-//        frameBitmap = Bitmap.createBitmap(
-//            frameBitmap,
-//            0,
-//            0,
-//            frameBitmap.width,
-//            frameBitmap.height,
-//            imageTransform,
-//            false
-//        )
-//
-//        if (!isBoundingBoxTransformedInitialized) {
-//            boundingBoxTransform = Matrix()
-//            boundingBoxTransform.apply {
-//                setScale(
-//                    overlayWidth / frameBitmap.width.toFloat(),
-//                    overlayHeight / frameBitmap.height.toFloat()
-//                )
-//                if (cameraFacing == CameraSelector.LENS_FACING_FRONT) {
-//                    // Mirror the bounding box coordinates for front-facing camera
-//                    postScale(
-//                        -1f,
-//                        1f,
-//                        overlayWidth.toFloat() / 2.0f,
-//                        overlayHeight.toFloat() / 2.0f
-//                    )
-//                }
-//            }
-//            isBoundingBoxTransformedInitialized = true
-//        }
-//
-//        CoroutineScope(Dispatchers.Default).launch {
-//            val predictions = ArrayList<Prediction>()
-//            val (metrics, results) = viewModel.imageVectorUseCase.detectFaces(frameBitmap)
-//
-//            // Assume metrics is of type FaceDetectionMetrics
-//            var hasRealFace = false
-//            var capturedFaceBitmap: Bitmap? = null
-//
-//            // Process detection results
-//            for (result in results) {
-//                val box = result.boundingBox.toRectF()
-//                var label = "Face"
-//                val isSpoof = result.spoofResult?.isSpoof ?: false
-//
-//                if (result.spoofResult != null && isSpoof) {
-//                    label = "Spoof: ${result.spoofResult.score}"
-//                } else {
-//                    // Real face detected
-//                    hasRealFace = true
-//                    if (capturedFaceBitmap == null) {
-//                        capturedFaceBitmap = extractFaceBitmap(frameBitmap, result.boundingBox)
-//                    }
-//                }
-//
-//                boundingBoxTransform.mapRect(box)
-//                predictions.add(Prediction(box, label))
-//            }
-//
-//            withContext(Dispatchers.Main) {
-//                if (hasRealFace) {
-//                    // Update ViewModel with FaceDetectionMetrics for real face
-//                    viewModel.onFaceDetected(
-//                        isReal = true,
-//                        bitmap = capturedFaceBitmap,
-//                        faceDetectionMetrics = metrics
-//                    )
-//                } else {
-//
-//                    // For spoofed faces, you can either skip or pass null metrics
-//                    viewModel.onFaceDetected(
-//                        isReal = false,
-//                        bitmap = null,
-//                        faceDetectionMetrics = null
-//                    )
-//                }
-//
-//                // Update UI elements
-//                this@FaceDetectionOverlay.predictions = predictions.toTypedArray()
-//                boundingBoxOverlay.invalidate()
-//                isProcessing = false
-//            }
-//        }
-//        image.close()
-//    }
-private val analyzer = ImageAnalysis.Analyzer { image ->
-    if (isProcessing) {
-        image.close()
-        return@Analyzer
-    }
-    isProcessing = true
 
-    // Transform android.net.Image to Bitmap
-    frameBitmap = Bitmap.createBitmap(
-        image.image!!.width,
-        image.image!!.height,
-        Bitmap.Config.ARGB_8888
-    )
-    frameBitmap.copyPixelsFromBuffer(image.planes[0].buffer)
 
-    // Configure frameHeight and frameWidth for output2overlay transformation matrix
-    // and apply it to `frameBitmap`
-    if (!isImageTransformedInitialized) {
-        imageTransform = Matrix()
-        imageTransform.apply { postRotate(image.imageInfo.rotationDegrees.toFloat()) }
-        isImageTransformedInitialized = true
-    }
-    frameBitmap = Bitmap.createBitmap(
-        frameBitmap,
-        0,
-        0,
-        frameBitmap.width,
-        frameBitmap.height,
-        imageTransform,
-        false
-    )
 
-    if (!isBoundingBoxTransformedInitialized) {
-        boundingBoxTransform = Matrix()
-        boundingBoxTransform.apply {
-            setScale(
-                overlayWidth / frameBitmap.width.toFloat(),
-                overlayHeight / frameBitmap.height.toFloat()
-            )
-            if (cameraFacing == CameraSelector.LENS_FACING_FRONT) {
-                // Mirror the bounding box coordinates for front-facing camera
-                postScale(
-                    -1f,
-                    1f,
-                    overlayWidth.toFloat() / 2.0f,
-                    overlayHeight.toFloat() / 2.0f
+    private val analyzer = ImageAnalysis.Analyzer { image ->
+        if (isProcessing) {
+            image.close()
+            return@Analyzer
+        }
+        isProcessing = true
+
+        // Transform android.net.Image to Bitmap
+        frameBitmap = Bitmap.createBitmap(
+            image.image!!.width,
+            image.image!!.height,
+            Bitmap.Config.ARGB_8888
+        )
+        frameBitmap.copyPixelsFromBuffer(image.planes[0].buffer)
+
+        // Configure frameHeight and frameWidth for output2overlay transformation matrix
+        // and apply it to `frameBitmap`
+        if (!isImageTransformedInitialized) {
+            imageTransform = Matrix()
+            imageTransform.apply { postRotate(image.imageInfo.rotationDegrees.toFloat()) }
+            isImageTransformedInitialized = true
+        }
+        frameBitmap = Bitmap.createBitmap(
+            frameBitmap,
+            0,
+            0,
+            frameBitmap.width,
+            frameBitmap.height,
+            imageTransform,
+            false
+        )
+
+        if (!isBoundingBoxTransformedInitialized) {
+            boundingBoxTransform = Matrix()
+            boundingBoxTransform.apply {
+                setScale(
+                    overlayWidth / frameBitmap.width.toFloat(),
+                    overlayHeight / frameBitmap.height.toFloat()
                 )
+                if (cameraFacing == CameraSelector.LENS_FACING_FRONT) {
+                    postScale(
+                        -1f,
+                        1f,
+                        overlayWidth.toFloat() / 2.0f,
+                        overlayHeight.toFloat() / 2.0f
+                    )
+                }
             }
+            isBoundingBoxTransformedInitialized = true
         }
-        isBoundingBoxTransformedInitialized = true
-    }
 
-    CoroutineScope(Dispatchers.Default).launch {
-        val predictions = ArrayList<Prediction>()
-        val (metrics, results) = viewModel.imageVectorUseCase.detectFaces(frameBitmap)
+        CoroutineScope(Dispatchers.Default).launch {
+            val predictions = ArrayList<Prediction>()
+            val (metrics, results) = viewModel.imageVectorUseCase.detectFaces(frameBitmap)
 
-        // Assume metrics is of type FaceDetectionMetrics
-        var hasRealFace = false
-        var hasSpoofFace = false
-        var capturedFaceBitmap: Bitmap? = null
+            // Assume metrics is of type FaceDetectionMetrics
+            var hasRealFace = false
+            var hasSpoofFace = false
+            var capturedFaceBitmap: Bitmap? = null
 
-        // Check if any faces were detected
-        if (results.isEmpty()) {
-            // No faces detected
-            withContext(Dispatchers.Main) {
-                viewModel.onNoFaceDetected()
-                this@FaceDetectionOverlay.predictions = arrayOf()
-                boundingBoxOverlay.invalidate()
-                isProcessing = false
-            }
-        } else {
-            // Process detection results
-            for (result in results) {
-                val box = result.boundingBox.toRectF()
-                var label = "Face"
-                val isSpoof = result.spoofResult?.isSpoof ?: false
+            // Check if any faces were detected
+            if (results.isEmpty()) {
+                // No faces detected
+                withContext(Dispatchers.Main) {
+                    viewModel.onNoFaceDetected()
+                    this@FaceDetectionOverlay.predictions = arrayOf()
+                    boundingBoxOverlay.invalidate()
+                    isProcessing = false
+                }
+            } else {
+                // Process detection results
+                for (result in results) {
+                    val box = result.boundingBox.toRectF()
+                    var label = "Face"
+                    val isSpoof = result.spoofResult?.isSpoof ?: false
 
-                if (result.spoofResult != null && isSpoof) {
-                    label = "Spoof: ${result.spoofResult.score}"
-                    hasSpoofFace = true
-                } else {
-                    // Real face detected
-                    hasRealFace = true
-                    if (capturedFaceBitmap == null) {
-                        capturedFaceBitmap = extractFaceBitmap(frameBitmap, result.boundingBox)
+                    if (result.spoofResult != null && isSpoof) {
+                        label = "Spoof: ${result.spoofResult.score}"
+                        hasSpoofFace = true
+                    } else {
+                        // Real face detected
+                        hasRealFace = true
+                        label = "Real"
+                        if (capturedFaceBitmap == null) {
+                            capturedFaceBitmap = frameBitmap
+                        }
                     }
+
+                    // Apply transformation to the bounding box
+                    boundingBoxTransform.mapRect(box)
+
+                    // Increase the size of the bounding box by scaling its dimensions
+                    val scaleFactor = 1.2f // Increase size by 20%
+                    val widthIncrease = (box.width() * (scaleFactor - 1f)) / 2
+                    val heightIncrease = (box.height() * (scaleFactor - 1f)) / 2
+                    box.left -= widthIncrease
+                    box.right += widthIncrease
+                    box.top -= heightIncrease
+                    box.bottom += heightIncrease
+
+                    // Ensure the box stays within overlay bounds
+                    box.left = maxOf(0f, box.left)
+                    box.right = minOf(overlayWidth.toFloat(), box.right)
+                    box.top = maxOf(0f, box.top)
+                    box.bottom = minOf(overlayHeight.toFloat(), box.bottom)
+
+                    predictions.add(Prediction(box, label, isSpoof))
                 }
 
-                boundingBoxTransform.mapRect(box)
-                predictions.add(Prediction(box, label))
-            }
+                withContext(Dispatchers.Main) {
+                    if (hasRealFace) {
+                        // Update ViewModel with FaceDetectionMetrics for real face
+                        viewModel.onFaceDetected(
+                            isReal = true,
+                            bitmap = capturedFaceBitmap,
+                            faceDetectionMetrics = metrics
+                        )
+                    } else if (hasSpoofFace) {
+                        // For spoofed faces only
+                        viewModel.onFaceDetected(
+                            isReal = false,
+                            bitmap = null,
+                            faceDetectionMetrics = null
+                        )
+                    }
 
-            withContext(Dispatchers.Main) {
-                if (hasRealFace) {
-                    // Update ViewModel with FaceDetectionMetrics for real face
-                    viewModel.onFaceDetected(
-                        isReal = true,
-                        bitmap = capturedFaceBitmap,
-                        faceDetectionMetrics = metrics
-                    )
-                } else if (hasSpoofFace) {
-                    // For spoofed faces only
-                    viewModel.onFaceDetected(
-                        isReal = false,
-                        bitmap = null,
-                        faceDetectionMetrics = null
-                    )
+                    // Update UI elements
+                    this@FaceDetectionOverlay.predictions = predictions.toTypedArray()
+                    boundingBoxOverlay.invalidate()
+                    isProcessing = false
                 }
-
-                // Update UI elements
-                this@FaceDetectionOverlay.predictions = predictions.toTypedArray()
-                boundingBoxOverlay.invalidate()
-                isProcessing = false
             }
+            image.close()
         }
     }
-    image.close()
-}
-//    private val analyzer =
-//        ImageAnalysis.Analyzer { image ->
-//            if (isProcessing) {
-//                image.close()
-//                return@Analyzer
-//            }
-//            isProcessing = true
-//
-//            // Transform android.net.Image to Bitmap
-//            frameBitmap =
-//                Bitmap.createBitmap(
-//                    image.image!!.width,
-//                    image.image!!.height,
-//                    Bitmap.Config.ARGB_8888
-//                )
-//            frameBitmap.copyPixelsFromBuffer(image.planes[0].buffer)
-//
-//            // Configure frameHeight and frameWidth for output2overlay transformation matrix
-//            // and apply it to `frameBitmap`
-//            if (!isImageTransformedInitialized) {
-//                imageTransform = Matrix()
-//                imageTransform.apply { postRotate(image.imageInfo.rotationDegrees.toFloat()) }
-//                isImageTransformedInitialized = true
-//            }
-//            frameBitmap =
-//                Bitmap.createBitmap(
-//                    frameBitmap,
-//                    0,
-//                    0,
-//                    frameBitmap.width,
-//                    frameBitmap.height,
-//                    imageTransform,
-//                    false
-//                )
-//
-//            if (!isBoundingBoxTransformedInitialized) {
-//                boundingBoxTransform = Matrix()
-//                boundingBoxTransform.apply {
-//                    setScale(
-//                        overlayWidth / frameBitmap.width.toFloat(),
-//                        overlayHeight / frameBitmap.height.toFloat()
-//                    )
-//                    if (cameraFacing == CameraSelector.LENS_FACING_FRONT) {
-//                        // Mirror the bounding box coordinates for front-facing camera
-//                        postScale(
-//                            -1f,
-//                            1f,
-//                            overlayWidth.toFloat() / 2.0f,
-//                            overlayHeight.toFloat() / 2.0f
-//                        )
-//                    }
-//                }
-//                isBoundingBoxTransformedInitialized = true
-//            }
-//
-//            CoroutineScope(Dispatchers.Default).launch {
-//                val predictions = ArrayList<Prediction>()
-//                val (metrics, results) = viewModel.imageVectorUseCase.detectFaces(frameBitmap)
-//
-//                // Track if any real faces are detected
-//                var hasRealFace = false
-//                var capturedFaceBitmap: Bitmap? = null
-//
-//                // Use explicit iteration to avoid ambiguity
-//                for (result in results) {
-//                    val box = result.boundingBox.toRectF()
-//                    var label = "Face"
-//                    val isSpoof = result.spoofResult?.isSpoof ?: false
-//
-//                    if (result.spoofResult != null && isSpoof) {
-//                        label = "Spoof: ${result.spoofResult.score}"
-//                    } else {
-//                        // This is a real face
-//                        hasRealFace = true
-//                        // Optionally capture the face bitmap for the first real face detected
-//                        if (capturedFaceBitmap == null) {
-//                            capturedFaceBitmap = extractFaceBitmap(frameBitmap, result.boundingBox)
-//                        }
-//                    }
-//
-//                    boundingBoxTransform.mapRect(box)
-////                    predictions.add(Prediction(box))
-//                    predictions.add(Prediction(box, label))
-//                }
-//
-//                withContext(Dispatchers.Main) {
-//                    // Update the ViewModel with detection results
-//                    viewModel.onFaceDetected(
-//                        isReal = hasRealFace,
-//                        bitmap = capturedFaceBitmap,
-//                        metrics = metrics
-//                    )
-//
-//                    // Update UI elements
-//                    this@FaceDetectionOverlay.predictions = predictions.toTypedArray()
-//                    boundingBoxOverlay.invalidate()
-//                    isProcessing = false
-//                }
-//            }
-//            image.close()
-//        }
 
     // Helper function to extract face bitmap from the frame
     private fun extractFaceBitmap(frameBitmap: Bitmap, boundingBox: android.graphics.Rect): Bitmap? {
@@ -729,98 +496,30 @@ private val analyzer = ImageAnalysis.Analyzer { image ->
         }
     }
 
-//    private val analyzer =
-//        ImageAnalysis.Analyzer { image ->
-//            if (isProcessing) {
-//                image.close()
-//                return@Analyzer
-//            }
-//            isProcessing = true
-//
-//            // Transform android.net.Image to Bitmap
-//            frameBitmap =
-//                Bitmap.createBitmap(
-//                    image.image!!.width,
-//                    image.image!!.height,
-//                    Bitmap.Config.ARGB_8888
-//                )
-//            frameBitmap.copyPixelsFromBuffer(image.planes[0].buffer)
-//
-//            // Configure frameHeight and frameWidth for output2overlay transformation matrix
-//            // and apply it to `frameBitmap`
-//            if (!isImageTransformedInitialized) {
-//                imageTransform = Matrix()
-//                imageTransform.apply { postRotate(image.imageInfo.rotationDegrees.toFloat()) }
-//                isImageTransformedInitialized = true
-//            }
-//            frameBitmap =
-//                Bitmap.createBitmap(
-//                    frameBitmap,
-//                    0,
-//                    0,
-//                    frameBitmap.width,
-//                    frameBitmap.height,
-//                    imageTransform,
-//                    false
-//                )
-//
-//            if (!isBoundingBoxTransformedInitialized) {
-//                boundingBoxTransform = Matrix()
-//                boundingBoxTransform.apply {
-//                    setScale(
-//                        overlayWidth / frameBitmap.width.toFloat(),
-//                        overlayHeight / frameBitmap.height.toFloat()
-//                    )
-//                    if (cameraFacing == CameraSelector.LENS_FACING_FRONT) {
-//                        // Mirror the bounding box coordinates for front-facing camera
-//                        postScale(
-//                            -1f,
-//                            1f,
-//                            overlayWidth.toFloat() / 2.0f,
-//                            overlayHeight.toFloat() / 2.0f
-//                        )
-//                    }
-//                }
-//                isBoundingBoxTransformedInitialized = true
-//            }
-//            CoroutineScope(Dispatchers.Default).launch {
-//                val predictions = ArrayList<Prediction>()
-//                val (metrics, results) = viewModel.imageVectorUseCase.detectFaces(frameBitmap)
-//                results.forEach { result ->
-//                    val box = result.boundingBox.toRectF()
-//                    var label = "Face"
-//                    if (result.spoofResult != null && result.spoofResult.isSpoof) {
-//                        label = "Spoof: ${result.spoofResult.score}"
-//                    }
-//                    boundingBoxTransform.mapRect(box)
-//                    predictions.add(Prediction(box, label))
-//                }
-//                withContext(Dispatchers.Main) {
-//                    viewModel.faceDetectionMetricsState.value = metrics
-//                    this@FaceDetectionOverlay.predictions = predictions.toTypedArray()
-//                    boundingBoxOverlay.invalidate()
-//                    isProcessing = false
-//                }
-//            }
-//            image.close()
-//        }
-
-
-    data class Prediction(var bbox: RectF, var label: String = "")
+    data class Prediction(
+        var bbox: RectF,
+        var label: String = "",
+        var isSpoof: Boolean = false
+    )
 
     inner class BoundingBoxOverlay(context: Context) :
         SurfaceView(context), SurfaceHolder.Callback {
 
-        private val boxPaint =
+        private val boxPaintFill =
             Paint().apply {
-                color = Color.parseColor("#4D90caf9")
+                color = Color.TRANSPARENT // Transparent background
                 style = Paint.Style.FILL
+            }
+        private val boxPaintStroke =
+            Paint().apply {
+                style = Paint.Style.STROKE
+                strokeWidth = 4.0f // Border thickness
             }
         private val textPaint =
             Paint().apply {
                 strokeWidth = 2.0f
-                textSize = 36f
-                color = Color.WHITE
+                textSize = 48f // Increased text size
+                textAlign = Paint.Align.RIGHT // Align text to the right
             }
 
         override fun surfaceCreated(holder: SurfaceHolder) {}
@@ -831,8 +530,21 @@ private val analyzer = ImageAnalysis.Analyzer { image ->
 
         override fun onDraw(canvas: Canvas) {
             predictions.forEach {
-                canvas.drawRoundRect(it.bbox, 16f, 16f, boxPaint)
-                canvas.drawText(it.label, it.bbox.centerX(), it.bbox.centerY(), textPaint)
+                // Set border color based on spoof status
+                boxPaintStroke.color = if (it.isSpoof) Color.RED else Color.GREEN
+                // Draw transparent fill
+                canvas.drawRoundRect(it.bbox, 16f, 16f, boxPaintFill)
+                // Draw border
+                canvas.drawRoundRect(it.bbox, 16f, 16f, boxPaintStroke)
+                // Set text color based on spoof status
+                textPaint.color = if (it.isSpoof) Color.RED else Color.GREEN
+                // Draw label at top-right corner of the bounding box
+                canvas.drawText(
+                    it.label,
+                    it.bbox.right - 8f, // Small offset from right edge
+                    it.bbox.top + textPaint.textSize, // Align with top, account for text size
+                    textPaint
+                )
             }
         }
     }

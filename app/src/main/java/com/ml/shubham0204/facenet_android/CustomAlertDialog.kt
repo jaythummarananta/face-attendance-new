@@ -1,3 +1,4 @@
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.ml.shubham0204.facenet_android.ApiRepo.UserFaceAuthModel
+import com.ml.shubham0204.facenet_android.LoginScreen
 import com.ml.shubham0204.facenet_android.R
 
 
@@ -102,8 +104,9 @@ fun ShowCustomAlertDialog(
 ) {
     val showDialog = remember { mutableStateOf(true) }
 
+    Log.d("TAG", "ShowCustomAlertDialog: ${response}")
     if (showDialog.value) {
-        val userDetails = if (response.success == true && response.data?.userDetails != null) {
+        val userDetails = if (response.data?.userDetails != null) {
             val details = response.data.userDetails
             buildString {
                 append(details.firstName ?: "Unknown")

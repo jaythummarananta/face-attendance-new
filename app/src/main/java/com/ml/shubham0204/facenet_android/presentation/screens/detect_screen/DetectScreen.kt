@@ -217,12 +217,12 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.OptIn
 import androidx.benchmark.perfetto.ExperimentalPerfettoTraceProcessorApi
-import androidx.benchmark.perfetto.Row
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.animation.animateContentSize
@@ -236,24 +236,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -303,25 +296,29 @@ fun DetectScreen(onNavigate: () -> Unit) {
     FaceNetAndroidTheme {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            topBar = {
-                TopAppBar(
-                    colors = TopAppBarDefaults.topAppBarColors(),
-                    title = {
-                        Text(
-                            text = "Attendance",
-                            style = MaterialTheme.typography.labelLarge
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = onNavigate) {
-                            Icon(
-                                imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = "Back"
-                            )
-                        }
-                    },
-                )
-            }
+//            topBar = {
+//                TopAppBar(
+//                    colors = TopAppBarDefaults.topAppBarColors(
+//                        containerColor = Color.White,           // AppBar background
+//                        titleContentColor = Color.Black,        // Title text color
+//                        navigationIconContentColor = Color.Black // Back icon color
+//                    ),
+//                    title = {
+//                        Text(
+//                            text = "Attendance",
+//                            style = MaterialTheme.typography.labelLarge
+//                        )
+//                    },
+//                    navigationIcon = {
+//                        IconButton(onClick = onNavigate) {
+//                            Icon(
+//                                imageVector = Icons.Filled.ArrowBack,
+//                                contentDescription = "Back"
+//                            )
+//                        }
+//                    },
+//                )
+//            }
         ) { innerPadding ->
             Column(modifier = Modifier.padding(innerPadding)) {
                 ScreenUI(onNavigate)
@@ -521,13 +518,16 @@ private fun Camera(
                 viewModel.getCapturedFaceImage()?.let { bitmap ->
                     scope.launch {
                         try {
+                            isShowFakeUserDialog = false
                             viewModel.setLoading(true)
                             val imageFile = bitmapToFile(context, bitmap)
                             Log.d("Camera", "attendancePick: $imageFile")
                             // Uncomment if you want to call the API
                             val response = authApi.attendancePick(imageFile)
                             attendanceResponse = response
-                            viewModel.setAttendanceResponse(response)
+                            if (response != null) {
+                                viewModel.setAttendanceResponse(response)
+                            }
                         } catch (e: Exception) {
                             Log.d("Camera", "attendancePick failed: ${e.message}")
                         } finally {
@@ -539,7 +539,25 @@ private fun Camera(
 
             isFakeUser -> {
                 // Fake face detected - show warning dialog
-                isShowFakeUserDialog = true
+                AuthApi.spoofAttempts++
+                if (AuthApi.spoofAttempts > 3) {
+                    Toast.makeText(
+                        context,
+                        "Please Call Developer You are Blocked",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Spoof detected " + AuthApi.spoofAttempts + " time",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+
+                }
+                onNavigateToHome()
+//                isShowFakeUserDialog = true
             }
         }
     }
@@ -579,53 +597,50 @@ private fun Camera(
     }
 
     // Fake user detection dialog with enhanced styling
-    if (isShowFakeUserDialog) {
-        AlertDialog(
-            onDismissRequest = {
-                isShowFakeUserDialog = false
-                viewModel.resetState()
-                faceDetectionOverlay.value?.initializeCamera(cameraFacing.value)
-            },
-            title = { Text("Processing") },
-
-            text = {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        "⚠️ Spoof/Fake face detected!\n\nPlease use your real face for authentication.",
-                        textAlign = TextAlign.Center,
-                        color = Color.Black
-                    )
-                }
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        isShowFakeUserDialog = false
-                        viewModel.resetState()
-                        faceDetectionOverlay.value?.initializeCamera(cameraFacing.value)
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
-                ) {
-                    Text("Try Again", color = Color.White)
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = {
-                        isShowFakeUserDialog = false
-                        viewModel.resetState()
-                        faceDetectionOverlay.value?.initializeCamera(cameraFacing.value)
-                        onNavigateToHome()
-                    }
-                ) {
-                    Text("Cancel")
-                }
-            }
-        )
-    }
+//    if (isShowFakeUserDialog) {
+//        AlertDialog(
+//            onDismissRequest = {
+//                isShowFakeUserDialog = false
+//                viewModel.resetState()
+//                faceDetectionOverlay.value?.initializeCamera(cameraFacing.value)
+//            },
+//            title = { Text("Processing") },
+//
+//            text = {
+//                Column(
+//                    modifier = Modifier.fillMaxWidth(),
+//                    horizontalAlignment = Alignment.CenterHorizontally
+//                ) {
+//                    Text(
+//                        "⚠️ Spoof/Fake face detected!\n\nPlease use your real face for authentication.",
+//                        textAlign = TextAlign.Center,
+//                        color = Color.White
+//                    )
+//                }
+//            },
+//            confirmButton = {
+//                Button(
+//                    onClick = {
+//
+//                        onNavigateToHome()
+//                    },
+//                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+//                ) {
+//                    Text("Try Again", color = Color.White)
+//                }
+//            },
+//            dismissButton = {
+//                TextButton(
+//                    onClick = {
+//
+//                        onNavigateToHome()
+//                    }
+//                ) {
+//                    Text("Cancel")
+//                }
+//            }
+//        )
+//    }
 
     // Loading dialog
     if (isLoading) {

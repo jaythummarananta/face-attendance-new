@@ -94,6 +94,9 @@ dependencies {
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.androidx.benchmark.macro)
 
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+    implementation ("androidx.compose.material:material:1.7.0")
     // ObjectBox - vector database
     debugImplementation("io.objectbox:objectbox-android-objectbrowser:4.0.0")
     releaseImplementation("io.objectbox:objectbox-android:4.0.0")
