@@ -344,6 +344,7 @@ fun initializeCamera(cameraFacing: Int) {
         }
         isProcessing = true
 
+        Log.d("FaceDetectionOverlay", "Image analysis started  width :${image.image!!.width} x height : ${image.image!!.height}")
         // Transform android.net.Image to Bitmap
         frameBitmap = Bitmap.createBitmap(
             image.image!!.width,

@@ -1,46 +1,7 @@
 package com.ml.shubham0204.facenet_android
-//
-//import android.os.Bundle
-//import androidx.activity.ComponentActivity
-//import androidx.activity.compose.setContent
-//import androidx.activity.enableEdgeToEdge
-//import androidx.compose.animation.fadeIn
-//import androidx.compose.animation.fadeOut
-//import androidx.navigation.compose.NavHost
-//import androidx.navigation.compose.composable
-//import androidx.navigation.compose.rememberNavController
-//import com.ml.shubham0204.facenet_android.presentation.screens.add_face.AddFaceScreen
-//import com.ml.shubham0204.facenet_android.presentation.screens.detect_screen.DetectScreen
-//import com.ml.shubham0204.facenet_android.presentation.screens.face_list.FaceListScreen
-//
-//class MainActivity : ComponentActivity() {
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
-//        setContent {
-//            val navHostController = rememberNavController()
-//            NavHost(
-//                navController = navHostController,
-//                startDestination = "detect",
-//                enterTransition = { fadeIn() },
-//                exitTransition = { fadeOut() }
-//            ) {
-//                composable("add-face") { AddFaceScreen { navHostController.navigateUp() } }
-//                composable("detect") { DetectScreen { navHostController.navigate("face-list") } }
-//                composable("face-list") {
-//                    FaceListScreen(
-//                        onNavigateBack = { navHostController.navigateUp() },
-//                        onAddFaceClick = { navHostController.navigate("add-face") }
-//                    )
-//                }
-//            }
-//        }
-//    }
-//}
-
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -48,12 +9,36 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -62,66 +47,42 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-
-import com.ml.shubham0204.facenet_android.presentation.screens.add_face.AddFaceScreen
-import com.ml.shubham0204.facenet_android.presentation.screens.detect_screen.DetectScreen
-import com.ml.shubham0204.facenet_android.presentation.screens.face_list.FaceListScreen
-import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
-import android.content.SharedPreferences
-import androidx.lifecycle.ViewModel
 import com.google.gson.Gson
 import com.ml.shubham0204.facenet_android.ApiRepo.AuthApi
 import com.ml.shubham0204.facenet_android.ApiRepo.UserResponse
 import com.ml.shubham0204.facenet_android.ApiRepo.showMessage
-import com.yourpackage.ui.HomeScreen
-import kotlinx.serialization.encodeToString
+import com.ml.shubham0204.facenet_android.presentation.screens.add_face.FaceDetectionPage
+import com.ml.shubham0204.facenet_android.presentation.screens.add_user.AddUserScreen
+import com.ml.shubham0204.facenet_android.presentation.screens.dashboard.DashboardScreen
+import com.ml.shubham0204.facenet_android.presentation.screens.dashboard.EmployeeScreen
+import com.ml.shubham0204.facenet_android.presentation.screens.dashboard.LeaveScreen
+import com.ml.shubham0204.facenet_android.presentation.screens.dashboard.ReportScreen
+import com.ml.shubham0204.facenet_android.presentation.screens.detect_screen.DetectScreen
+import com.ml.shubham0204.facenet_android.presentation.screens.face_list.FaceListScreen
+import com.ml.shubham0204.facenet_android.screens.EmployeePage
+import com.ml.shubham0204.facenet_android.viewModel.AddUserViewModel
 
-//class MainActivity : ComponentActivity() {
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
-//        setContent {
-//            val navHostController = rememberNavController()
-//            val authViewModel = AuthViewModel(LocalContext.current)
-//            NavHost(
-//                navController = navHostController,
-//                startDestination = "detect",
-//                enterTransition = { fadeIn() },
-//                exitTransition = { fadeOut() }
-//            ) {
-//                composable("login") {
-//                    LoginScreen(
-//                        authViewModel = authViewModel,
-//                        navController = navHostController
-//                    )
-//                }
-//                composable("add-face") { AddFaceScreen { navHostController.navigateUp() } }
-//                composable("detect") { DetectScreen { navHostController.navigate("face-list") } }
-//                composable("face-list") {
-//                    FaceListScreen(
-//                        onNavigateBack = { navHostController.navigateUp() },
-//                        onAddFaceClick = { navHostController.navigate("add-face") }
-//                    )
-//                }
-//            }
-//        }
-//    }
-//}
+import com.yourpackage.ui.HomeScreen
+import kotlinx.coroutines.launch
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+
             AppNavigation()
         }
     }
+
 }
+
 
 @Composable
 fun AppNavigation() {
@@ -130,7 +91,7 @@ fun AppNavigation() {
     val authViewModel = AuthViewModel(context)
 
     // Determine start destination based on login status
-    val startDestination = if (authViewModel.isUserLoggedIn()) "home" else "login"
+    val startDestination = if (authViewModel.isUserLoggedIn()) "dashboard" else "login"
 
     NavHost(
         navController = navController,
@@ -144,11 +105,32 @@ fun AppNavigation() {
                 navController = navController
             )
         }
+
+        composable("add_user") {
+            AddUserScreen(navController = navController,)
+        }
+        composable("employee_list") { EmployeePage(navController = navController) }
+        composable("face_photo/{imageIndex}") { backStackEntry ->
+            val imageIndex = backStackEntry.arguments?.getString("imageIndex")?.toIntOrNull() ?: 1
+            FaceDetectionPage(navController, imageIndex)
+        }
+//        composable("face_photo") {
+//            FaceDetectionPage(
+//                navController = navController,
+//                imageIndex = 0
+//            )
+//        }
+        composable("employee") { EmployeeScreen() }
+        composable("report") { ReportScreen() }
+        composable("attendance") { DetectScreen { navController.navigate("dashboard") } }
         composable("home") {
             HomeScreen(navController = navController)
         }
-        composable("add-face") {
-            AddFaceScreen { navController.navigateUp() }
+        composable("dashboard") {
+            DashboardScreen(
+                onNavigateBack = { navController.navigateUp() },
+                navController = navController
+            )
         }
         composable("detect") {
             DetectScreen { navController.navigate("home") }
@@ -161,6 +143,7 @@ fun AppNavigation() {
         }
     }
 }
+
 @Composable
 fun LoginScreen(authViewModel: AuthViewModel, navController: NavHostController) {
     var email by remember { mutableStateOf("") }
@@ -228,13 +211,19 @@ fun LoginScreen(authViewModel: AuthViewModel, navController: NavHostController) 
                         keyboardActions = KeyboardActions(
                             onDone = {
                                 scope.launch {
-                                    authViewModel.login(email, password, isRemember, context, navController)
+                                    authViewModel.login(
+                                        email,
+                                        password,
+                                        isRemember,
+                                        context,
+                                        navController
+                                    )
                                 }
                             }
                         ),
                         modifier = Modifier.fillMaxWidth(),
 
-                    )
+                        )
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Row(
@@ -255,7 +244,13 @@ fun LoginScreen(authViewModel: AuthViewModel, navController: NavHostController) 
                     Button(
                         onClick = {
                             scope.launch {
-                                authViewModel.login(email, password, isRemember, context, navController)
+                                authViewModel.login(
+                                    email,
+                                    password,
+                                    isRemember,
+                                    context,
+                                    navController
+                                )
                             }
                         },
                         enabled = !isLoading,
@@ -287,91 +282,6 @@ fun LoginScreen(authViewModel: AuthViewModel, navController: NavHostController) 
     }
 }
 
-//class AuthViewModel(private val context: Context) {
-//    private val authApi = AuthApi.getInstance(context)
-//    private val _isLoading = mutableStateOf(false)
-//    val isLoading: State<Boolean> = _isLoading
-//    private val _errorMessage = mutableStateOf<String?>(null)
-//    val errorMessage: State<String?> = _errorMessage
-//    private val sharedPreferences: SharedPreferences =
-//        context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
-//
-//    suspend fun login(
-//        email: String,
-//        password: String,
-//        isRemember: Boolean,
-//        context: Context,
-//        navController: NavHostController
-//    ) {
-//        if (email.isEmpty()) {
-//            _errorMessage.value = "Please enter email"
-//            showMessage(context, "Please enter email")
-//            return
-//        }
-//        if (!isValidEmail(email)) {
-//            _errorMessage.value = "Please enter valid email address"
-//            showMessage(context, "Please enter valid email address")
-//            return
-//        }
-//        if (password.isEmpty()) {
-//            _errorMessage.value = "Please enter password"
-//            showMessage(context, "Please enter password")
-//            return
-//        }
-//
-//        _isLoading.value = true
-//        try {
-//            authApi.withRetry {
-//                authApi.bgLogin()
-//            }.let { bgResponse ->
-//                Log.d("AuthViewModel", "bgLogin response: $bgResponse")
-//                if (bgResponse.data?.success == false) {
-//                    authApi.withRetry {
-//                        authApi.login(email, password)
-//                    }.let { response ->
-//                        Log.d("AuthViewModel", "Login response: $response")
-//                        storeUserData(response, isRemember)
-//                        _errorMessage.value = null
-//                        navController.navigate("detect") {
-//                            popUpTo("login") { inclusive = true }
-//                        }
-//                    }
-//                } else {
-//                    _errorMessage.value = "Background login failed"
-//                    showMessage(context, "Background login failed")
-//                }
-//            }
-//        } catch (e: Exception) {
-////            _errorMessage.value = e.message ?: "Error"
-//            showMessage(context, e.message ?: "Error")
-//            Log.e("AuthViewModel", "Login error: ${e.message}")
-//        } finally {
-//            _isLoading.value = false
-//        }
-//    }
-//
-//    private fun storeUserData(response: UserResponse, isRemember: Boolean) {
-//        with(sharedPreferences.edit()) {
-//            response.data?.accessToken?.let { putString("token", it) }
-//            putString("user_model", Json.encodeToString(response))
-//            putBoolean("is_user_login", true)
-//            if (isRemember) {
-//                putString("email", response.data?.email)
-//                putBoolean("remember_me", true)
-//            } else {
-//                remove("email")
-//                putBoolean("remember_me", false)
-//            }
-//            apply()
-//        }
-//    }
-//
-//    private fun isValidEmail(email: String): Boolean {
-//        return email.matches(
-//            Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$")
-//        )
-//    }
-//}
 class AuthViewModel(private val context: Context) : ViewModel() {
     private val authApi = AuthApi.getInstance(context)
     private val _isLoading = mutableStateOf(false)
@@ -394,11 +304,7 @@ class AuthViewModel(private val context: Context) : ViewModel() {
             showMessage(context, "Please enter email")
             return
         }
-        if (!isValidEmail(email)) {
-            _errorMessage.value = "Please enter valid email address"
-            showMessage(context, "Please enter valid email address")
-            return
-        }
+
         if (password.isEmpty()) {
             _errorMessage.value = "Please enter password"
             showMessage(context, "Please enter password")
@@ -408,22 +314,30 @@ class AuthViewModel(private val context: Context) : ViewModel() {
         _isLoading.value = true
         try {
             authApi.withRetry {
-                authApi.bgLogin()
+                authApi.bgLogin(email, password)
             }.let { bgResponse ->
                 Log.d("AuthViewModel", "bgLogin response: $bgResponse")
                 if (bgResponse != null) {
-                    if (bgResponse.data?.success == false) {
+                    if (bgResponse.isSuccessful == true) {
+                        with(sharedPreferences.edit()) {
+                            Log.d("AuthViewModel", "bgLogin response: ${bgResponse.body()?.data?.company_id}")
+                            bgResponse.body()?.data?.company_id?.let { putString("company_id", it) }
+                            apply()
+                        }
                         authApi.withRetry {
-                            authApi.login(email, password)
+                            authApi.login()
                         }.let { response ->
                             Log.d("AuthViewModel", "Login response: $response")
                             if (response != null) {
                                 storeUserData(response, isRemember)
+                                navController.navigate("dashboard") {
+                                    popUpTo("login") { inclusive = true }
+                                }
+
+
                             }
                             _errorMessage.value = null
-                            navController.navigate("home") {
-                                popUpTo("login") { inclusive = true }
-                            }
+
                         }
                     } else {
                         _errorMessage.value = "Background login failed"
@@ -443,6 +357,7 @@ class AuthViewModel(private val context: Context) : ViewModel() {
     private fun storeUserData(response: UserResponse, isRemember: Boolean) {
         with(sharedPreferences.edit()) {
             response.data?.accessToken?.let { putString("token", it) }
+            Log.d("AuthViewModel", "Token: ${response.data?.accessToken}")
             putString("user_model", gson.toJson(response))
             putBoolean("is_user_login", true)
             if (isRemember) {

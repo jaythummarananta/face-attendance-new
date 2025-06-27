@@ -31,12 +31,9 @@ fun CustomAlertDialog(
     title: String,
     message: String,
     userDetails: String? = null,
-    positiveButtonText: String,
     imageResId: Int,
-    onPositiveButtonClick: () -> Unit,
-    onDismissRequest: () -> Unit = {}
 ) {
-    Dialog(onDismissRequest = onDismissRequest) {
+    Dialog(onDismissRequest = {}) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -80,17 +77,7 @@ fun CustomAlertDialog(
                     )
                 }
                 Spacer(modifier = Modifier.height(24.dp))
-                Button(
-                    onClick = {
-                        onPositiveButtonClick()
-                        onDismissRequest()
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp)
-                ) {
-                    Text(positiveButtonText)
-                }
+
             }
         }
     }
@@ -99,8 +86,7 @@ fun CustomAlertDialog(
 @Composable
 fun ShowCustomAlertDialog(
     response: UserFaceAuthModel,
-    onDismissRequest: () -> Unit = {},
-    onConfirm: () -> Unit
+
 ) {
     val showDialog = remember { mutableStateOf(true) }
 
@@ -136,16 +122,9 @@ fun ShowCustomAlertDialog(
             title = title,
             message = message,
             userDetails = userDetails,
-            positiveButtonText = "OK",
             imageResId = if (isSuccess && userDetails != null) R.drawable.check else R.drawable.correct,
-            onPositiveButtonClick = {
-                showDialog.value = false
-                onConfirm()
-            },
-            onDismissRequest = {
-                showDialog.value = false
-                onDismissRequest()
-            }
+
+
         )
     }
 }

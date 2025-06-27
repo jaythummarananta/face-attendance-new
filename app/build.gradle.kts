@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.ml.shubham0204.facenet_android"
-    compileSdk = 34
+    compileSdk = 35
 
 
     splits {
@@ -23,7 +23,7 @@ android {
     defaultConfig {
         applicationId = "com.ml.shubham0204.facenet_android"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "0.0.1"
 
@@ -97,6 +97,8 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation ("androidx.compose.material:material:1.7.0")
+    implementation(libs.play.services.mlkit.face.detection)
+    implementation(libs.androidx.runtime.livedata)
     // ObjectBox - vector database
     debugImplementation("io.objectbox:objectbox-android-objectbrowser:4.0.0")
     releaseImplementation("io.objectbox:objectbox-android:4.0.0")
@@ -143,6 +145,16 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     implementation ("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
+    implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.8.6")
+
+    implementation ("androidx.activity:activity-compose:1.9.3")
+
+    implementation ("io.coil-kt:coil-compose:2.4.0")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation("com.google.dagger:hilt-android:2.48")
+
+
 //     implementation(libs.ktor.client.android)
 //     implementation(libs.ktor.client.content.negotiation)
 //     //noinspection UseTomlInstead
