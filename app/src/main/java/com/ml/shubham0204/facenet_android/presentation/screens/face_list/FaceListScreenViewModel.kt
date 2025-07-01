@@ -1,8 +1,8 @@
-package com.ml.shubham0204.facenet_android.presentation.screens.face_list
+package com.ananta.faceapp.presentation.screens.face_list
 
 import androidx.lifecycle.ViewModel
-import com.ml.shubham0204.facenet_android.domain.ImageVectorUseCase
-import com.ml.shubham0204.facenet_android.domain.PersonUseCase
+import com.ananta.faceapp.domain.ImageVectorUseCase
+import com.ananta.faceapp.domain.PersonUseCase
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel

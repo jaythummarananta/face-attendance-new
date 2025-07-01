@@ -1,4 +1,4 @@
-package com.ml.shubham0204.facenet_android.presentation.screens.employee
+package com.ananta.faceapp.presentation.screens.employee
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -18,8 +18,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.ml.shubham0204.facenet_android.ApiRepo.RetrofitClient
-import com.ml.shubham0204.facenet_android.data.employeeModel.Item
+import com.ananta.faceapp.ApiRepo.RetrofitClient
+import com.ananta.faceapp.data.employeeModel.Item
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import coil.compose.AsyncImagePainter
+import coil.compose.SubcomposeAsyncImage
+import coil.compose.SubcomposeAsyncImageContent
+import com.ananta.faceapp.R
 
 @Composable
 fun EmpListTile(item: Item) {
@@ -39,6 +50,25 @@ fun EmpListTile(item: Item) {
         Column(
             modifier = Modifier.padding(8.dp)
         ) {
+//            Row(
+//                modifier = Modifier.fillMaxWidth(),
+//                horizontalArrangement = Arrangement.Start
+//            ) {
+//                item.faces.forEach { face ->
+//                    AsyncImage(
+//                        model = "${RetrofitClient.BASE_URL1}${face.faceImage}",
+//                        contentDescription = "Face Image",
+//                        modifier = Modifier
+//                            .padding(8.dp)
+//                            .size(60.dp)
+//                            .clip(CircleShape)
+//                            .border(1.dp, Color.Black, CircleShape),
+//                        contentScale = ContentScale.Crop,
+////                        placeholder = painterResource(),
+////                        error = painterResource(R.drawable.placeholder)
+//                    )
+//                }
+//            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Start
@@ -53,11 +83,59 @@ fun EmpListTile(item: Item) {
                             .clip(CircleShape)
                             .border(1.dp, Color.Black, CircleShape),
                         contentScale = ContentScale.Crop,
-//                        placeholder = painterResource(),
-//                        error = painterResource(R.drawable.placeholder)
+                        placeholder = painterResource(id = R.drawable.placeholder), // 📌 placeholder from res
+                        error = painterResource(id = R.drawable.placeholder)       // 📌 fallback on error
                     )
                 }
             }
+
+//            Row(
+//                modifier = Modifier.fillMaxWidth(),
+//                horizontalArrangement = Arrangement.Start
+//            ) {
+//                item.faces.forEach { face ->
+//                    Box(
+//                        modifier = Modifier
+//                            .padding(8.dp)
+//                            .size(60.dp)
+//                            .clip(CircleShape)
+//                            .border(1.dp, Color.Black, CircleShape)
+//                    ) {
+//                        SubcomposeAsyncImage(
+//                            model = "${RetrofitClient.BASE_URL1}${face.faceImage}",
+//                            contentDescription = "Face Image",
+//                            contentScale = ContentScale.Crop,
+//                            modifier = Modifier.matchParentSize()
+//                        ) {
+//                            when (painter.state) {
+//                                is AsyncImagePainter.State.Loading -> {
+//                                    CircularProgressIndicator(
+//                                        strokeWidth = 2.dp,
+//                                        modifier = Modifier
+//                                            .size(24.dp)
+//                                            .align(Alignment.Center)
+//                                    )
+//                                }
+//
+//                                is AsyncImagePainter.State.Error -> {
+//                                    // Show fallback or placeholder
+//                                    Icon(
+//                                        painter = painterResource(id = R.drawable.placeholder),
+//                                        contentDescription = "Error",
+//                                        modifier = Modifier
+//                                            .matchParentSize()
+//                                            .clip(CircleShape)
+//                                    )
+//                                }
+//
+//                                else -> {
+//                                    SubcomposeAsyncImageContent()
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
             ReportTileWidget(
                 title = "Name",
                 value = "${item.firstName} ${item.lastName}"

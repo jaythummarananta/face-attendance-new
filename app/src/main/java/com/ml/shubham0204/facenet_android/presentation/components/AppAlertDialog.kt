@@ -1,4 +1,4 @@
-package com.ml.shubham0204.facenet_android.presentation.components
+package com.ananta.faceapp.presentation.components
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text

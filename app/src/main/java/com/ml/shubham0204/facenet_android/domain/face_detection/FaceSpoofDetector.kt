@@ -1,4 +1,4 @@
-package com.ml.shubham0204.facenet_android.domain.face_detection
+package com.ananta.faceapp.domain.face_detection
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -91,32 +91,32 @@ class FaceSpoofDetector(context: Context, useGpu: Boolean = false, useXNNPack: B
 
             Log.d("FaceSpoofDetector", "croppedImage1111: ${croppedImage1.height}x ${croppedImage1.width}")
 
-//            for (i in 0 until croppedImage1.width) {
-//                for (j in 0 until croppedImage1.height) {
-//                    croppedImage1[i, j] = Color.rgb(
-//                        Color.blue(croppedImage1[i, j]),
-//                        Color.green(croppedImage1[i, j]),
-//                        Color.red(croppedImage1[i, j])
-//                    )
-//                }
-//            }
-//            val croppedImage2 =
-//                crop(
-//                    origImage = frameImage,
-//                    bbox = faceRect,
-//                    bboxScale = scale2,
-//                    targetWidth = inputImageDim,
-//                    targetHeight = inputImageDim
-//                )
-//            for (i in 0 until croppedImage2.width) {
-//                for (j in 0 until croppedImage2.height) {
-//                    croppedImage2[i, j] = Color.rgb(
-//                        Color.blue(croppedImage2[i, j]),
-//                        Color.green(croppedImage2[i, j]),
-//                        Color.red(croppedImage2[i, j])
-//                    )
-//                }
-//            }
+            for (i in 0 until croppedImage1.width) {
+                for (j in 0 until croppedImage1.height) {
+                    croppedImage1[i, j] = Color.rgb(
+                        Color.blue(croppedImage1[i, j]),
+                        Color.green(croppedImage1[i, j]),
+                        Color.red(croppedImage1[i, j])
+                    )
+                }
+            }
+            val croppedImage2 =
+                crop(
+                    origImage = frameImage,
+                    bbox = faceRect,
+                    bboxScale = scale2,
+                    targetWidth = inputImageDim,
+                    targetHeight = inputImageDim
+                )
+            for (i in 0 until croppedImage2.width) {
+                for (j in 0 until croppedImage2.height) {
+                    croppedImage2[i, j] = Color.rgb(
+                        Color.blue(croppedImage2[i, j]),
+                        Color.green(croppedImage2[i, j]),
+                        Color.red(croppedImage2[i, j])
+                    )
+                }
+            }
 
             Log.d("FaceSpoofDetector", "croppedImage1: ${croppedImage1}")
 
@@ -125,7 +125,7 @@ class FaceSpoofDetector(context: Context, useGpu: Boolean = false, useXNNPack: B
 
             Log.d("FaceSpoofDetector", "input1: ${input1}")
 
-//            val input2 = imageTensorProcessor.process(TensorImage.fromBitmap(croppedImage2)).buffer
+            val input2 = imageTensorProcessor.process(TensorImage.fromBitmap(croppedImage2)).buffer
             val output1 = arrayOf(FloatArray(outputDim))
             val output2 = arrayOf(FloatArray(outputDim))
 
@@ -134,16 +134,16 @@ class FaceSpoofDetector(context: Context, useGpu: Boolean = false, useXNNPack: B
 
             val time = measureTime {
                 firstModelInterpreter.run(input1, output1)
-//                secondModelInterpreter.run(input2, output2)
+                secondModelInterpreter.run(input2, output2)
             }.toLong(DurationUnit.MILLISECONDS)
 
-//            val output = softMax(output1[0]).zip(softMax(output2[0])).map {
-//                (it.first + it.second)
-//            }
+            val output = softMax(output1[0]).zip(softMax(output2[0])).map {
+                (it.first + it.second)
+            }
 
 
             Log.d("FaceSpoofDetector", "output1: ${output1[0]}")
-            val output = softMax(output1[0]).map { it }
+//            val output = softMax(output1[0]).map { it }
             Log.d("FaceSpoofDetector", "calculate output: ${output}")
 
 

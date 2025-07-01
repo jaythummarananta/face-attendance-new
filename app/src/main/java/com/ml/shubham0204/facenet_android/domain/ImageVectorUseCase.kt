@@ -1,14 +1,14 @@
-//package com.ml.shubham0204.facenet_android.domain
+//package com.ananta.faceapp.domain
 //
 //import android.graphics.Bitmap
 //import android.graphics.Rect
 //import android.net.Uri
-//import com.ml.shubham0204.facenet_android.data.FaceImageRecord
-//import com.ml.shubham0204.facenet_android.data.ImagesVectorDB
-//import com.ml.shubham0204.facenet_android.data.RecognitionMetrics
-//import com.ml.shubham0204.facenet_android.domain.embeddings.FaceNet
-//import com.ml.shubham0204.facenet_android.domain.face_detection.FaceSpoofDetector
-//import com.ml.shubham0204.facenet_android.domain.face_detection.MediapipeFaceDetector
+//import com.ananta.faceapp.data.FaceImageRecord
+//import com.ananta.faceapp.data.ImagesVectorDB
+//import com.ananta.faceapp.data.RecognitionMetrics
+//import com.ananta.faceapp.domain.embeddings.FaceNet
+//import com.ananta.faceapp.domain.face_detection.FaceSpoofDetector
+//import com.ananta.faceapp.domain.face_detection.MediapipeFaceDetector
 //import kotlin.math.pow
 //import kotlin.math.sqrt
 //import kotlin.time.DurationUnit
@@ -128,13 +128,13 @@
 //        imagesVectorDB.removeFaceRecordsWithPersonID(personID)
 //    }
 //}
-package com.ml.shubham0204.facenet_android.domain
+package com.ananta.faceapp.domain
 
 import android.graphics.Bitmap
 import android.graphics.Rect
-import com.ml.shubham0204.facenet_android.data.RecognitionMetrics
-import com.ml.shubham0204.facenet_android.domain.face_detection.FaceSpoofDetector
-import com.ml.shubham0204.facenet_android.domain.face_detection.MediapipeFaceDetector
+import com.ananta.faceapp.data.RecognitionMetrics
+import com.ananta.faceapp.domain.face_detection.FaceSpoofDetector
+import com.ananta.faceapp.domain.face_detection.MediapipeFaceDetector
 import kotlin.time.DurationUnit
 import kotlin.time.measureTimedValue
 import org.koin.core.annotation.Single

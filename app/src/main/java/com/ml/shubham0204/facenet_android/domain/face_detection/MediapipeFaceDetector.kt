@@ -1,4 +1,4 @@
-package com.ml.shubham0204.facenet_android.domain.face_detection
+package com.ananta.faceapp.domain.face_detection
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -13,8 +13,8 @@ import com.google.mediapipe.framework.image.BitmapImageBuilder
 import com.google.mediapipe.tasks.core.BaseOptions
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.facedetector.FaceDetector
-import com.ml.shubham0204.facenet_android.domain.AppException
-import com.ml.shubham0204.facenet_android.domain.ErrorCode
+import com.ananta.faceapp.domain.AppException
+import com.ananta.faceapp.domain.ErrorCode
 import java.io.File
 import java.io.FileOutputStream
 import kotlinx.coroutines.Dispatchers

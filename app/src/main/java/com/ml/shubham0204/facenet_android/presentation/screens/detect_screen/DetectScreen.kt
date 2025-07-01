@@ -1,4 +1,4 @@
-package com.ml.shubham0204.facenet_android.presentation.screens.detect_screen
+package com.ananta.faceapp.presentation.screens.detect_screen
 
 import ShowCustomAlertDialog
 import android.Manifest
@@ -61,13 +61,15 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.app.ActivityCompat
 import com.ananta.globalwallet.ui.composables.CustomToast
-import com.ml.shubham0204.facenet_android.ApiRepo.AuthApi
-import com.ml.shubham0204.facenet_android.ApiRepo.UserFaceAuthModel
-import com.ml.shubham0204.facenet_android.presentation.components.AppAlertDialog
-import com.ml.shubham0204.facenet_android.presentation.components.DelayedVisibility
-import com.ml.shubham0204.facenet_android.presentation.components.FaceDetectionOverlay
-import com.ml.shubham0204.facenet_android.presentation.components.createAlertDialog
-import com.ml.shubham0204.facenet_android.presentation.theme.FaceNetAndroidTheme
+import com.ananta.faceapp.ApiRepo.AuthApi
+
+import com.ananta.faceapp.data.attendance.AttendanceModel
+import com.ananta.faceapp.data.attendance.BackendModel
+import com.ananta.faceapp.presentation.components.AppAlertDialog
+import com.ananta.faceapp.presentation.components.DelayedVisibility
+import com.ananta.faceapp.presentation.components.FaceDetectionOverlay
+import com.ananta.faceapp.presentation.components.createAlertDialog
+import com.ananta.faceapp.presentation.theme.FaceNetAndroidTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -84,7 +86,7 @@ private lateinit var storagePermissionLauncher: ManagedActivityResultLauncher<St
 @kotlin.OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetectScreen(onNavigate: () -> Unit) {
-    var attendanceResponse by remember { mutableStateOf<UserFaceAuthModel?>(null) }
+    var attendanceResponse by remember { mutableStateOf<AttendanceModel?>(null) }
 
     FaceNetAndroidTheme {
         Scaffold(
@@ -249,13 +251,15 @@ private fun Camera(
     cameraFacing: MutableState<Int>
 ) {
     var isShowDialog by remember { mutableStateOf(false) }
+    var isNavigateHome by remember { mutableStateOf(false) }
     var isShowFakeUserDialog by remember { mutableStateOf(false) }
     val authApi = AuthApi.getInstance(context)
     var showToast by remember { mutableStateOf(false) }
     var toastMessage by remember { mutableStateOf("") }
-    var attendanceResponse by remember { mutableStateOf<UserFaceAuthModel?>(null) }
+    var attendanceResponse by remember { mutableStateOf<AttendanceModel?>(null) }
     var isLoading by remember { mutableStateOf(false) }
     val isFakeUser by viewModel.isFakeUserState.collectAsState()
+    var attendanceDataResponse by remember { mutableStateOf<BackendModel?>(null) }
     val capturedFaceImage by viewModel.getCapturedFaceImage()
         ?.let { remember { mutableStateOf(it) } } ?: mutableStateOf(null)
     val faceDetectionOverlay = remember { mutableStateOf<FaceDetectionOverlay?>(null) }
@@ -285,23 +289,39 @@ private fun Camera(
 
         when {
             isReal && cameraPermissionStatus.value && capturedFaceImage != null -> {
-                // Real face detected - proceed with authentication
                 isShowDialog = true
                 viewModel.getCapturedFaceImage()?.let { bitmap ->
                     scope.launch {
                         try {
-                            isShowFakeUserDialog = false
                             viewModel.setLoading(true)
                             val imageFile = bitmapToFile(context, bitmap)
                             Log.d("Camera", "attendancePick: $imageFile")
-                            // Uncomment if you want to call the API
                             val response = authApi.attendancePick(imageFile)
                             attendanceResponse = response
-                            if (response != null) {
+                            if (response != null && response.success == true) {
                                 viewModel.setAttendanceResponse(response)
+                                val bioId = response.data?.userDetails?.bioId?.toString() ?: ""
+                                if (bioId.isNotEmpty()) {
+                                    val attendanceResult = authApi.doAddAttendance(bioId)
+                                    Log.d("backend api", "doAddAttendance result: $attendanceResult")
+                                    if (attendanceResult != null) {
+                                        attendanceDataResponse = attendanceResult // Update if needed
+                                    } else {
+                                        toastMessage = "Failed to add attendance"
+                                        showToast = true
+                                    }
+                                } else {
+                                    toastMessage = "BioID not found"
+                                    showToast = true
+                                }
+                            } else {
+                                toastMessage = "Attendance pick failed"
+                                showToast = true
                             }
                         } catch (e: Exception) {
                             Log.d("Camera", "attendancePick failed: ${e.message}")
+                            toastMessage = "Error: ${e.message}"
+                            showToast = true
                         } finally {
                             viewModel.setLoading(false)
                         }
@@ -406,7 +426,7 @@ private fun Camera(
 
         // Auto-dismiss after 2 seconds
         LaunchedEffect(Unit) {
-            delay(1000)
+            delay(2000)
             onNavigateToHome()
         }
     }

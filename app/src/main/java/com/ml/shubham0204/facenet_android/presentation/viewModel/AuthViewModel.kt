@@ -1,12 +1,12 @@
-package com.ml.shubham0204.facenet_android.viewModel
+package com.ananta.faceapp.viewModel
 
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ml.shubham0204.facenet_android.ApiRepo.AuthApi
-import com.ml.shubham0204.facenet_android.data.employeeModel.Item
+import com.ananta.faceapp.ApiRepo.AuthApi
+import com.ananta.faceapp.data.employeeModel.Item
 import kotlinx.coroutines.launch
 
 class AuthViewModel(context: Context) : ViewModel() {

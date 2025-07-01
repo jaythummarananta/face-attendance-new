@@ -1,4 +1,4 @@
-package com.ml.shubham0204.facenet_android.presentation.screens.dashboard
+package com.ananta.faceapp.presentation.screens.dashboard
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,11 +46,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import com.ml.shubham0204.facenet_android.ApiRepo.AuthApi
-import com.ml.shubham0204.facenet_android.ApiRepo.AuthApi.Companion.spoofAttempts
-import com.ml.shubham0204.facenet_android.R
-import com.ml.shubham0204.facenet_android.presentation.theme.FaceNetAndroidTheme
+import com.ananta.faceapp.ApiRepo.AuthApi
+import com.ananta.faceapp.ApiRepo.AuthApi.Companion.spoofAttempts
+import com.ananta.faceapp.R
+import com.ananta.faceapp.presentation.theme.FaceNetAndroidTheme
 import kotlinx.coroutines.delay
 
 // Asset constants (equivalent to AssetConstant.dart)
@@ -68,7 +70,10 @@ fun DashboardScreen(onNavigateBack: (() -> Unit), navController: NavController) 
     var showProgressDialog by remember { mutableStateOf(false) }
     var showToast by remember { mutableStateOf(false) }
     var toastMessage by remember { mutableStateOf("") }
-
+    val context = LocalContext.current
+    val appBgColor = remember {
+        Color(ContextCompat.getColor(context, R.color.white))
+    }
     // Trigger toast based on spoofAttempts
     LaunchedEffect(spoofAttempts) {
         if (spoofAttempts > 0) {
@@ -106,6 +111,7 @@ fun DashboardScreen(onNavigateBack: (() -> Unit), navController: NavController) 
 
     FaceNetAndroidTheme {
         Scaffold(
+            containerColor = appBgColor,
             topBar = {
                 TopAppBar(
                     title = { Text("Dashboard") },
@@ -125,10 +131,15 @@ fun DashboardScreen(onNavigateBack: (() -> Unit), navController: NavController) 
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.White,           // AppBar background
-                        titleContentColor = Color.Black,        // Title text color
-                        navigationIconContentColor = Color.Black // Back icon color
-                    ),
+                        containerColor = appBgColor,
+                        titleContentColor = Color.Black,
+                        navigationIconContentColor = Color.White
+                    )
+//                    colors = TopAppBarDefaults.topAppBarColors(
+//                        containerColor =  Color(ContextCompat.getColor(context, R.color.checkbox_color)),           // AppBar background
+//                        titleContentColor = Color.Black,        // Title text color
+//                        navigationIconContentColor = Color.Black // Back icon color
+//                    ),
                 )
             },
 
@@ -226,7 +237,7 @@ fun DashboardWidget(
                     bottomStart = 15.dp
                 )
             )
-            .background(colorResource(id = R.color.primary))
+            .background(colorResource(id = R.color.secondary))
             .border(1.dp, colorResource(id = R.color.white), RoundedCornerShape(topEnd = 15.dp, bottomStart = 15.dp))
             .clickable { onClick() }
             .padding(15.dp)

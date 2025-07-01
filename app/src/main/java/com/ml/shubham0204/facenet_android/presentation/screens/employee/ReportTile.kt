@@ -1,4 +1,4 @@
-package com.ml.shubham0204.facenet_android.presentation.screens.employee
+package com.ananta.faceapp.presentation.screens.employee
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

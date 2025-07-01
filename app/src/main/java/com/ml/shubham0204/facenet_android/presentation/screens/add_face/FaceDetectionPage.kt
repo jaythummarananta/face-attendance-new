@@ -1,4 +1,4 @@
-package com.ml.shubham0204.facenet_android.presentation.screens.add_face
+package com.ananta.faceapp.presentation.screens.add_face
 
 //@Composable
 //fun FaceDetectionPage(navController: NavController) {
@@ -263,7 +263,7 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetection
 import com.google.mlkit.vision.face.FaceDetectorOptions
-import com.ml.shubham0204.facenet_android.R
+import com.ananta.faceapp.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File

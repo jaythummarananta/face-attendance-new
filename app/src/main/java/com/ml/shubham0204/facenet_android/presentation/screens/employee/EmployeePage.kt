@@ -1,4 +1,4 @@
-package com.ml.shubham0204.facenet_android.screens
+package com.ananta.faceapp.screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,11 +31,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.ml.shubham0204.facenet_android.presentation.screens.employee.EmpListTile
-import com.ml.shubham0204.facenet_android.viewModel.AuthViewModel
-import com.ml.shubham0204.facenet_android.viewModel.AuthViewModelFactory
+import com.ananta.faceapp.R
+import com.ananta.faceapp.presentation.screens.employee.EmpListTile
+import com.ananta.faceapp.viewModel.AuthViewModel
+import com.ananta.faceapp.viewModel.AuthViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,20 +53,21 @@ fun EmployeePage(
     val users by authViewModel.users.observeAsState(emptyList())
     val isLoading = authViewModel.isLoading.observeAsState().value
 
+    val context = LocalContext.current
+    val appBgColor = remember {
+        Color(ContextCompat.getColor(context, R.color.white))
+    }
+
     Scaffold(
+        containerColor = appBgColor,
         topBar = {
             TopAppBar(
                 title = {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "EMPLOYEE",
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center
-                        )
-                    }
+
+                    Text(
+                        text = "Employee",
+                        textAlign = TextAlign.Center
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {

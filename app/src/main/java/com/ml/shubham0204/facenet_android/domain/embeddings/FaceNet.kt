@@ -1,4 +1,4 @@
-package com.ml.shubham0204.facenet_android.domain.embeddings
+package com.ananta.faceapp.domain.embeddings
 
 import android.content.Context
 import android.graphics.Bitmap

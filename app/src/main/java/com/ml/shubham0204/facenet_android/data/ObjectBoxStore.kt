@@ -1,4 +1,4 @@
-package com.ml.shubham0204.facenet_android.data
+package com.ananta.faceapp.data
 
 import android.content.Context
 import io.objectbox.BoxStore

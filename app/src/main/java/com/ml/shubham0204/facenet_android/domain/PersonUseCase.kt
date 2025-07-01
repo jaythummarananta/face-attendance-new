@@ -1,7 +1,7 @@
-package com.ml.shubham0204.facenet_android.domain
+package com.ananta.faceapp.domain
 
-import com.ml.shubham0204.facenet_android.data.PersonDB
-import com.ml.shubham0204.facenet_android.data.PersonRecord
+import com.ananta.faceapp.data.PersonDB
+import com.ananta.faceapp.data.PersonRecord
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.annotation.Single
 

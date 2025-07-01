@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "604397404463",
+    "project_id": "faceapp-d9b38",
+    "storage_bucket": "faceapp-d9b38.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:604397404463:android:7ceb061bd22219cf66a1da",
+        "android_client_info": {
+          "package_name": "com.ananta.faceapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAK3rR7JAtYBGztpnHt6kD6PJp1Wp-yiz0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

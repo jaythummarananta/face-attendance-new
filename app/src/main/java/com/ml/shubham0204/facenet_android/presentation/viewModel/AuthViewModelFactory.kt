@@ -1,4 +1,4 @@
-package com.ml.shubham0204.facenet_android.viewModel
+package com.ananta.faceapp.viewModel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

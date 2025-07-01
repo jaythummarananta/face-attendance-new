@@ -1,4 +1,4 @@
-package com.ml.shubham0204.facenet_android.domain
+package com.ananta.faceapp.domain
 
 enum class ErrorCode(val message: String) {
     MULTIPLE_FACES("Multiple faces found in the image"),

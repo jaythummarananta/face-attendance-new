@@ -2,13 +2,14 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    id("com.google.gms.google-services")
 //    id("org.jetbrains.kotlin.plugin.serialization")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
 }
 
 android {
-    namespace = "com.ml.shubham0204.facenet_android"
+    namespace = "com.ananta.faceapp"
     compileSdk = 35
 
 
@@ -21,7 +22,7 @@ android {
         }
     }
     defaultConfig {
-        applicationId = "com.ml.shubham0204.facenet_android"
+        applicationId = "com.ananta.faceapp"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
@@ -153,6 +154,14 @@ dependencies {
     implementation ("io.coil-kt:coil-compose:2.4.0")
     implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation("com.google.dagger:hilt-android:2.48")
+
+    implementation("io.insert-koin:koin-android:3.5.6")
+
+    implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation ("com.google.firebase:firebase-config")
+    implementation("com.google.firebase:firebase-database:20.2.0")
+
 
 
 //     implementation(libs.ktor.client.android)

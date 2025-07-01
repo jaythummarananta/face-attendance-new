@@ -1,4 +1,4 @@
-package com.ml.shubham0204.facenet_android.presentation.theme
+package com.ananta.faceapp.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -1,4 +1,4 @@
-package com.ml.shubham0204.facenet_android.data
+package com.ananta.faceapp.data
 
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.HnswIndex

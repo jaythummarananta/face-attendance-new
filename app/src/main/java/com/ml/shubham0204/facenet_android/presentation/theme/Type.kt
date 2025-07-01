@@ -1,10 +1,10 @@
-package com.ml.shubham0204.facenet_android.presentation.theme
+package com.ananta.faceapp.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.googlefonts.Font
 import androidx.compose.ui.text.googlefonts.GoogleFont
-import com.ml.shubham0204.facenet_android.R
+import com.ananta.faceapp.R
 
 val provider =
     GoogleFont.Provider(

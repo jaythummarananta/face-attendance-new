@@ -1,8 +1,8 @@
-package com.ml.shubham0204.facenet_android
+package com.ananta.faceapp
 
 import android.app.Application
-import com.ml.shubham0204.facenet_android.data.ObjectBoxStore
-import com.ml.shubham0204.facenet_android.di.AppModule
+import com.ananta.faceapp.data.ObjectBoxStore
+import com.ananta.faceapp.di.AppModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.ksp.generated.module

@@ -1,4 +1,4 @@
-package com.ml.shubham0204.facenet_android.presentation.screens.face_detection
+package com.ananta.faceapp.presentation.screens.face_detection
 
 import android.annotation.SuppressLint
 import android.hardware.camera2.params.Face

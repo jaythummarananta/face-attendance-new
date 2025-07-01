@@ -1,10 +1,10 @@
-//package com.ml.shubham0204.facenet_android.presentation.screens.detect_screen
+//package com.ananta.faceapp.presentation.screens.detect_screen
 //
 //import androidx.compose.runtime.mutableStateOf
 //import androidx.lifecycle.ViewModel
-//import com.ml.shubham0204.facenet_android.data.RecognitionMetrics
-//import com.ml.shubham0204.facenet_android.domain.ImageVectorUseCase
-//import com.ml.shubham0204.facenet_android.domain.PersonUseCase
+//import com.ananta.faceapp.data.RecognitionMetrics
+//import com.ananta.faceapp.domain.ImageVectorUseCase
+//import com.ananta.faceapp.domain.PersonUseCase
 //import org.koin.android.annotation.KoinViewModel
 //
 //@KoinViewModel
@@ -17,17 +17,17 @@
 //
 //    fun getNumPeople(): Long = personUseCase.getCount()
 //}
-package com.ml.shubham0204.facenet_android.presentation.screens.detect_screen
+package com.ananta.faceapp.presentation.screens.detect_screen
 
 import android.graphics.Bitmap
 import android.graphics.Color
 import androidx.lifecycle.ViewModel
-import com.ml.shubham0204.facenet_android.ApiRepo.UserFaceAuthModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import com.ml.shubham0204.facenet_android.data.RecognitionMetrics
-import com.ml.shubham0204.facenet_android.domain.ImageVectorUseCase
-import com.ml.shubham0204.facenet_android.domain.PersonUseCase
+import com.ananta.faceapp.data.RecognitionMetrics
+import com.ananta.faceapp.data.attendance.AttendanceModel
+import com.ananta.faceapp.domain.ImageVectorUseCase
+import com.ananta.faceapp.domain.PersonUseCase
 import kotlinx.coroutines.flow.asStateFlow
 import org.koin.android.annotation.KoinViewModel
 
@@ -44,8 +44,8 @@ class DetectScreenViewModel(
     val personUseCase: PersonUseCase,
     val imageVectorUseCase: ImageVectorUseCase
 ) : ViewModel() {
-    private val _attendanceResponseState = MutableStateFlow<UserFaceAuthModel?>(null)
-    val attendanceResponseState: StateFlow<UserFaceAuthModel?> = _attendanceResponseState.asStateFlow()
+    private val _attendanceResponseState = MutableStateFlow<AttendanceModel?>(null)
+    val attendanceResponseState: StateFlow<AttendanceModel?> = _attendanceResponseState.asStateFlow()
 
     private val _faceDetectionMetricsState = MutableStateFlow<RecognitionMetrics?>(null)
     val faceDetectionMetricsState: StateFlow<RecognitionMetrics?> = _faceDetectionMetricsState
@@ -130,7 +130,7 @@ class DetectScreenViewModel(
 
     fun getCapturedFaceImage(): Bitmap? = capturedFaceImage
 
-    fun setAttendanceResponse(response: UserFaceAuthModel) {
+    fun setAttendanceResponse(response: AttendanceModel) {
         _attendanceResponseState.value = response
     }
 

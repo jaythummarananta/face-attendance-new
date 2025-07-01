@@ -1,14 +1,14 @@
-package com.ml.shubham0204.facenet_android.presentation.screens.add_face
+package com.ananta.faceapp.presentation.screens.add_face
 
 import android.net.Uri
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.ml.shubham0204.facenet_android.domain.AppException
-import com.ml.shubham0204.facenet_android.domain.ImageVectorUseCase
-import com.ml.shubham0204.facenet_android.domain.PersonUseCase
-import com.ml.shubham0204.facenet_android.presentation.components.setProgressDialogText
+import com.ananta.faceapp.domain.AppException
+import com.ananta.faceapp.domain.ImageVectorUseCase
+import com.ananta.faceapp.domain.PersonUseCase
+import com.ananta.faceapp.presentation.components.setProgressDialogText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

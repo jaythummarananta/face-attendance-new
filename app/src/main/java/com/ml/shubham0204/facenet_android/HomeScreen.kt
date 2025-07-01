@@ -46,9 +46,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import com.ananta.globalwallet.ui.composables.CustomToast
-import com.ml.shubham0204.facenet_android.ApiRepo.AuthApi
-import com.ml.shubham0204.facenet_android.ApiRepo.AuthApi.Companion.spoofAttempts
-import com.ml.shubham0204.facenet_android.R
+import com.ananta.faceapp.ApiRepo.AuthApi
+import com.ananta.faceapp.ApiRepo.AuthApi.Companion.spoofAttempts
+import com.ananta.faceapp.R
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)

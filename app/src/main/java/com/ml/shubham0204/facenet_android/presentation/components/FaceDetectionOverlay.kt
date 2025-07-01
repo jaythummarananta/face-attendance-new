@@ -1,4 +1,4 @@
-//package com.ml.shubham0204.facenet_android.presentation.components
+//package com.ananta.faceapp.presentation.components
 //
 //import android.annotation.SuppressLint
 //import android.content.Context
@@ -22,7 +22,7 @@
 //import androidx.core.graphics.toRectF
 //import androidx.core.view.doOnLayout
 //import androidx.lifecycle.LifecycleOwner
-//import com.ml.shubham0204.facenet_android.presentation.screens.detect_screen.DetectScreenViewModel
+//import com.ananta.faceapp.presentation.screens.detect_screen.DetectScreenViewModel
 //import java.util.concurrent.Executors
 //import kotlinx.coroutines.CoroutineScope
 //import kotlinx.coroutines.Dispatchers
@@ -221,7 +221,7 @@
 //        }
 //    }
 //}
-package com.ml.shubham0204.facenet_android.presentation.components
+package com.ananta.faceapp.presentation.components
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -246,7 +246,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.toRectF
 import androidx.core.view.doOnLayout
 import androidx.lifecycle.LifecycleOwner
-import com.ml.shubham0204.facenet_android.presentation.screens.detect_screen.DetectScreenViewModel
+import com.ananta.faceapp.presentation.screens.detect_screen.DetectScreenViewModel
 import java.util.concurrent.Executors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

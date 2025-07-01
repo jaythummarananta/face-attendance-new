@@ -21,9 +21,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.ml.shubham0204.facenet_android.ApiRepo.UserFaceAuthModel
-import com.ml.shubham0204.facenet_android.LoginScreen
-import com.ml.shubham0204.facenet_android.R
+
+import com.ananta.faceapp.LoginScreen
+import com.ananta.faceapp.R
+import com.ananta.faceapp.data.attendance.AttendanceModel
 
 
 @Composable
@@ -85,7 +86,7 @@ fun CustomAlertDialog(
 
 @Composable
 fun ShowCustomAlertDialog(
-    response: UserFaceAuthModel,
+    response: AttendanceModel,
 
 ) {
     val showDialog = remember { mutableStateOf(true) }

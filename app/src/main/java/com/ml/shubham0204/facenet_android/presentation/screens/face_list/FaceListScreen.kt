@@ -1,4 +1,4 @@
-package com.ml.shubham0204.facenet_android.presentation.screens.face_list
+package com.ananta.faceapp.presentation.screens.face_list
 
 import android.text.format.DateUtils
 import androidx.compose.foundation.background
@@ -33,10 +33,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.ml.shubham0204.facenet_android.data.PersonRecord
-import com.ml.shubham0204.facenet_android.presentation.components.AppAlertDialog
-import com.ml.shubham0204.facenet_android.presentation.components.createAlertDialog
-import com.ml.shubham0204.facenet_android.presentation.theme.FaceNetAndroidTheme
+import com.ananta.faceapp.data.PersonRecord
+import com.ananta.faceapp.presentation.components.AppAlertDialog
+import com.ananta.faceapp.presentation.components.createAlertDialog
+import com.ananta.faceapp.presentation.theme.FaceNetAndroidTheme
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
