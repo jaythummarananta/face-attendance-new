@@ -3,32 +3,55 @@ package com.ananta.faceapp.ApiRepo
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.util.Log
 import com.google.gson.GsonBuilder
 import com.ananta.faceapp.ApiRepo.AuthService
 import com.ananta.faceapp.MainActivity
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private const val BASE_URL = "https://face-attedance.anantalabs.in/v1/"
+
+    // live
+    private const val BASE_URL = "http://139.59.69.40:1500/v1/"
+
+    // local
+//    private const val BASE_URL = "http://192.168.1.128:1500/v1/"
+//    private const val BASE_URL = "https://face-attendv2.anantalabs.in/v1/"
+
+
     private const val BG_LOGIN_URL = "https://imanageapi.intenics.in/"
 
-    public  val BASE_URL1 = "https://face-attedance.anantalabs.in/public/uploads/faces/"
+//    public  val BASE_URL1 = "https://face-attendv2.anantalabs.in"
+    public  val BASE_URL1 = "http://139.59.69.40:1500/public/"
 
     fun createAuthService(context: Context): AuthService {
         val sharedPreferences = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
 
+//        val okHttpClient = OkHttpClient.Builder()
+//            .addInterceptor(AuthInterceptor(sharedPreferences))
+//            .addInterceptor(ResponseValidationInterceptor(context, sharedPreferences))
+//            .build()
+        val logging = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
         val okHttpClient = OkHttpClient.Builder()
+            .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS) // server connect timeout
+            .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)    // response read timeout
+            .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)   // request write timeout
             .addInterceptor(AuthInterceptor(sharedPreferences))
             .addInterceptor(ResponseValidationInterceptor(context, sharedPreferences))
+            .addInterceptor(logging)
             .build()
 
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
+
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .build()
 
@@ -52,6 +75,8 @@ object RetrofitClient {
             val requestBuilder = chain.request().newBuilder()
                 .addHeader("Accept", "application/json")
 
+
+            Log.d("AuthInterceptor", "Token: ${sharedPreferences.getString("token", null)}")
             sharedPreferences.getString("token", null)?.let { token ->
                 requestBuilder.addHeader("Authorization", "Bearer $token")
             }

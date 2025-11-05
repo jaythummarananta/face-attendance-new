@@ -1,4 +1,4 @@
-package com.ananta.faceapp.data.loginModel
+package com.ml.shubham0204.facenet_android.domain.model.loginModel
 
 data class Data(
     val _id: String,

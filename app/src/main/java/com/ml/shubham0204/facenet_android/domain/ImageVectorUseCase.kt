@@ -132,6 +132,7 @@ package com.ananta.faceapp.domain
 
 import android.graphics.Bitmap
 import android.graphics.Rect
+import android.util.Log
 import com.ananta.faceapp.data.RecognitionMetrics
 import com.ananta.faceapp.domain.face_detection.FaceSpoofDetector
 import com.ananta.faceapp.domain.face_detection.MediapipeFaceDetector
@@ -160,7 +161,11 @@ class ImageVectorUseCase(
         val faceDetectionResults = ArrayList<FaceDetectionResult>()
         var avgT4 = 0L
 
+        Log.d("","faceDetectionResults --- $faceDetectionResults")
         for (result in faceDetectionResult) {
+
+            Log.d("","Results --- $result")
+
             val (croppedBitmap, boundingBox) = result
             // Perform spoofing detection
             val spoofResult = faceSpoofDetector.detectSpoof(frameBitmap, boundingBox)

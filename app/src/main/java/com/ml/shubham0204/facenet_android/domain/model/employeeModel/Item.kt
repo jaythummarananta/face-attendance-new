@@ -6,6 +6,8 @@ data class Item(
     val department: String,
     val designation: String,
     val dob: String,
+    val bioId: String,
+    val companyId: String,
     val email: String,
     val faces: List<Face>,
     val firstName: String,

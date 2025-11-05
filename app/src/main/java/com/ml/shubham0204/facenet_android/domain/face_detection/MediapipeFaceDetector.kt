@@ -2,21 +2,13 @@ package com.ananta.faceapp.domain.face_detection
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.graphics.Rect
-import android.net.Uri
 import android.util.Log
 import androidx.core.graphics.toRect
-import androidx.exifinterface.media.ExifInterface
 import com.google.mediapipe.framework.image.BitmapImageBuilder
 import com.google.mediapipe.tasks.core.BaseOptions
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.facedetector.FaceDetector
-import com.ananta.faceapp.domain.AppException
-import com.ananta.faceapp.domain.ErrorCode
-import java.io.File
-import java.io.FileOutputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Single
@@ -78,3 +70,66 @@ class MediapipeFaceDetector(private val context: Context) {
             (boundingBox.top + boundingBox.height()) < cameraFrameBitmap.height
     }
 }
+
+//package com.ananta.faceapp.domain.face_detection
+//
+//import android.content.Context
+//import android.graphics.Bitmap
+//import android.graphics.Rect
+//import android.util.Log
+//import androidx.core.graphics.toRect
+//import com.google.mediapipe.framework.image.BitmapImageBuilder
+//import com.google.mediapipe.tasks.core.BaseOptions
+//import com.google.mediapipe.tasks.vision.core.RunningMode
+//import com.google.mediapipe.tasks.vision.facedetector.FaceDetector
+//import kotlinx.coroutines.Dispatchers
+//import kotlinx.coroutines.withContext
+//import org.koin.core.annotation.Single
+//
+//@Single
+//class MediapipeFaceDetector(private val context: Context) {
+//    private val modelName = "blaze_face_short_range.tflite"
+//    private val baseOptions = BaseOptions.builder().setModelAssetPath(modelName).build()
+//    private val faceDetectorOptions = FaceDetector.FaceDetectorOptions.builder()
+//        .setBaseOptions(baseOptions)
+//        .setRunningMode(RunningMode.IMAGE)
+//        .build()
+//    private val faceDetector = FaceDetector.createFromOptions(context, faceDetectorOptions)
+//
+//    suspend fun getAllCroppedFaces(frameBitmap: Bitmap): List<Pair<Bitmap, Rect>> =
+//        withContext(Dispatchers.IO) {
+//            Log.d("MediapipeFaceDetector", "Input bitmap: ${frameBitmap.width}x${frameBitmap.height}")
+//            val detections = faceDetector.detect(BitmapImageBuilder(frameBitmap).build()).detections()
+//            Log.d("MediapipeFaceDetector", "Detected ${detections.size} faces")
+//            return@withContext detections
+//                .filter { validateRect(frameBitmap, it.boundingBox().toRect()) }
+//                .map { detection ->
+//                    val rect =detection.boundingBox().toRect()
+//                    Log.d("MediapipeFaceDetector", "Face rect: left=${rect.left}, top=${rect.top}, width=${rect.width()}, height=${rect.height()}")
+//                    val croppedBitmap = try {
+//                        Bitmap.createBitmap(
+//                            frameBitmap,
+//                            rect.left,
+//                            rect.top,
+//                            rect.width(),
+//                            rect.height()
+//                        )
+//                    } catch (e: Exception) {
+//                        Log.e("MediapipeFaceDetector", "Error cropping face: ${e.message}")
+//                        null
+//                    }
+//                    Pair(croppedBitmap, rect)
+//                }
+//                .filter { it.first != null }
+//                .map { Pair(it.first!!, it.second) }
+//        }
+//
+//    private fun validateRect(cameraFrameBitmap: Bitmap, boundingBox: Rect): Boolean {
+//        val isValid = boundingBox.left >= 0 &&
+//                boundingBox.top >= 0 &&
+//                (boundingBox.left + boundingBox.width()) <= cameraFrameBitmap.width &&
+//                (boundingBox.top + boundingBox.height()) <= cameraFrameBitmap.height
+//        Log.d("MediapipeFaceDetector", "Validate rect: $isValid, rect=$boundingBox, bitmap=${cameraFrameBitmap.width}x${cameraFrameBitmap.height}")
+//        return isValid
+//    }
+//}

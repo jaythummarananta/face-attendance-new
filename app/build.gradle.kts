@@ -6,6 +6,7 @@ plugins {
 //    id("org.jetbrains.kotlin.plugin.serialization")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
+    id("com.google.firebase.crashlytics") // Crashlytics
 }
 
 android {
@@ -119,7 +120,6 @@ dependencies {
     // DocumentFile and ExitInterface
     implementation(libs.androidx.documentfile)
     implementation(libs.androidx.exifinterface)
-
     // Kotlin Coil
     implementation(libs.coil)
     implementation(libs.coil.compose)
@@ -160,6 +160,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation ("com.google.firebase:firebase-config")
+    implementation("com.google.firebase:firebase-crashlytics")
     implementation("com.google.firebase:firebase-database:20.2.0")
 
 

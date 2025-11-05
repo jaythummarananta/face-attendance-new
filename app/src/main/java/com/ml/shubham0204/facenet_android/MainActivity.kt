@@ -9,7 +9,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +21,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -30,6 +32,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -50,17 +54,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.gson.Gson
 import com.ananta.faceapp.ApiRepo.AuthApi
 import com.ananta.faceapp.ApiRepo.UserResponse
 import com.ananta.faceapp.ApiRepo.showMessage
@@ -68,15 +69,17 @@ import com.ananta.faceapp.presentation.screens.add_face.FaceDetectionPage
 import com.ananta.faceapp.presentation.screens.add_user.AddUserScreen
 import com.ananta.faceapp.presentation.screens.dashboard.DashboardScreen
 import com.ananta.faceapp.presentation.screens.dashboard.EmployeeScreen
-import com.ananta.faceapp.presentation.screens.dashboard.LeaveScreen
-import com.ananta.faceapp.presentation.screens.dashboard.ReportScreen
 import com.ananta.faceapp.presentation.screens.detect_screen.DetectScreen
 import com.ananta.faceapp.presentation.screens.face_list.FaceListScreen
 import com.ananta.faceapp.screens.EmployeePage
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-
+import com.google.gson.Gson
+import com.ml.shubham0204.facenet_android.presentation.setting.SettingsScreen
 import com.yourpackage.ui.HomeScreen
 import kotlinx.coroutines.launch
 
@@ -92,11 +95,18 @@ class MainActivity : ComponentActivity() {
 
         // Add initial data to Realtime Database
         getIsEnableValue()
+        // Example: set user identifier
+        FirebaseCrashlytics.getInstance().setUserId("user_${System.currentTimeMillis()}")
+
+        // Example: log extra data
+        FirebaseCrashlytics.getInstance().log("MainActivity launched")
+
 
         setContent {
             AppNavigation()
         }
     }
+
     private fun getIsEnableValue() {
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -131,28 +141,6 @@ class MainActivity : ComponentActivity() {
             }
         })
     }
-//private fun getIsEnableValue() {
-//    myRef.addValueEventListener(object : ValueEventListener {
-//        override fun onDataChange(snapshot: DataSnapshot) {
-//            // Check if the snapshot exists and contains the "isEnable" key
-//            if (snapshot.exists()) {
-//                val isEnable = snapshot.child("isEnable").getValue(Boolean::class.java)
-//                if (isEnable != null) {
-//                    Log.d("MainActivity", "isEnable value: $isEnable")
-//                    // Use the isEnable value (e.g., update UI or logic)
-//                } else {
-//                    Log.w("MainActivity", "isEnable value is null")
-//                }
-//            } else {
-//                Log.w("MainActivity", "No data found at the specified reference")
-//            }
-//        }
-//
-//        override fun onCancelled(error: DatabaseError) {
-//            Log.e("MainActivity", "Failed to read data: ${error.message}", error.toException())
-//        }
-//    })
-//}
 }
 
 
@@ -182,23 +170,14 @@ fun AppNavigation() {
             AddUserScreen(navController = navController)
         }
         composable("employee_list") { EmployeePage(navController = navController) }
-//        composable("face_photo/{imageIndex}") { backStackEntry ->
-//            val imageIndex = backStackEntry.arguments?.getString("imageIndex")?.toIntOrNull() ?: 1
-//            FaceDetectionPage(navController, imageIndex)
-//        }
         composable("face_photo/{imageIndex}") { backStackEntry ->
             val imageIndex = backStackEntry.arguments?.getString("imageIndex")?.toIntOrNull() ?: 1
             FaceDetectionPage(navController = navController, imageIndex = imageIndex)
         }
-//        composable("face_photo") {
-//            FaceDetectionPage(
-//                navController = navController,
-//                imageIndex = 0
-//            )
-//        }
+
         composable("employee") { EmployeeScreen() }
-        composable("report") { ReportScreen() }
-        composable("attendance") { DetectScreen { navController.navigate("dashboard") } }
+        composable("settings") { SettingsScreen(navController = navController) }
+        composable("attendance") { DetectScreen(navController = navController) }
         composable("home") {
             HomeScreen(navController = navController)
         }
@@ -207,9 +186,6 @@ fun AppNavigation() {
                 onNavigateBack = { navController.navigateUp() },
                 navController = navController
             )
-        }
-        composable("detect") {
-            DetectScreen { navController.navigate("home") }
         }
         composable("face-list") {
             FaceListScreen(
@@ -224,6 +200,7 @@ fun AppNavigation() {
 fun LoginScreen(authViewModel: AuthViewModel, navController: NavHostController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var isPasswordVisible by remember { mutableStateOf(false) }
     var isRemember by remember { mutableStateOf(false) }
     val isLoading by authViewModel.isLoading
     val errorMessage by authViewModel.errorMessage
@@ -285,7 +262,7 @@ fun LoginScreen(authViewModel: AuthViewModel, navController: NavHostController) 
                         onValueChange = { password = it },
                         label = { Text("Password") },
                         placeholder = { Text("********") },
-                        visualTransformation = PasswordVisualTransformation(),
+                        visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Password,
                             imeAction = ImeAction.Done
@@ -304,8 +281,16 @@ fun LoginScreen(authViewModel: AuthViewModel, navController: NavHostController) 
                             }
                         ),
                         modifier = Modifier.fillMaxWidth(),
+                        trailingIcon = {
+                            IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                                Icon(
+                                    imageVector = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                    contentDescription = if (isPasswordVisible) "Hide password" else "Show password"
+                                )
+                            }
+                        }
 
-                        )
+                    )
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Row(
@@ -316,16 +301,16 @@ fun LoginScreen(authViewModel: AuthViewModel, navController: NavHostController) 
                             checked = isRemember,
                             onCheckedChange = { isRemember = it },
                             colors = CheckboxDefaults.colors(
-                                checkedColor =  Color(ContextCompat.getColor(context, R.color.primary)),
+                                checkedColor = Color(
+                                    ContextCompat.getColor(
+                                        context,
+                                        R.color.primary
+                                    )
+                                ),
                                 uncheckedColor = Color.Gray,
                                 checkmarkColor = Color.White
                             )
                         )
-//                        Checkbox(
-//                            checked = isRemember,
-//                            onCheckedChange = { isRemember = it },
-//
-//                        )
                         Text(
                             text = "Remember me",
                             style = MaterialTheme.typography.bodyMedium
@@ -419,15 +404,28 @@ class AuthViewModel(private val context: Context) : ViewModel() {
             }.let { bgResponse ->
                 Log.d("AuthViewModel", "bgLogin response: $bgResponse")
                 if (bgResponse != null) {
-                    if (bgResponse.isSuccessful == true) {
+                    if (bgResponse.body()?.status ==200) {
                         with(sharedPreferences.edit()) {
                             Log.d(
                                 "AuthViewModel",
                                 "bgLogin response: ${bgResponse.body()?.data?.company_id}"
                             )
-                            bgResponse.body()?.data?.company_id?.let { putString("company_id", it) }
+                            bgResponse.body()?.data?.company_id?.let {
+
+                                putString("company_id", it)
+                                putString("company", email)
+                                putString("company_password", password)
+                                Log.d("", "")
+                            }
                             apply()
                         }
+
+                        // ADDED: Retrieve and log company_id from SharedPreferences
+                        val storedCompanyId = sharedPreferences.getString("company_id", null)
+                        Log.d(
+                            "AuthViewModel",
+                            "Retrieved company_id from SharedPreferences: $storedCompanyId"
+                        )
                         authApi.withRetry {
                             authApi.login()
                         }.let { response ->

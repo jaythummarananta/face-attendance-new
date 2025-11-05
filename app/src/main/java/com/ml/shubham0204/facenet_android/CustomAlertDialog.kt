@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -21,10 +20,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-
-import com.ananta.faceapp.LoginScreen
 import com.ananta.faceapp.R
-import com.ananta.faceapp.data.attendance.AttendanceModel
+import com.ml.shubham0204.facenet_android.domain.model.attendance.AttendanceModel
 
 
 @Composable
@@ -34,7 +31,10 @@ fun CustomAlertDialog(
     userDetails: String? = null,
     imageResId: Int,
 ) {
-    Dialog(onDismissRequest = {}) {
+    Dialog(onDismissRequest = {
+
+
+    }) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -87,7 +87,6 @@ fun CustomAlertDialog(
 @Composable
 fun ShowCustomAlertDialog(
     response: AttendanceModel,
-
 ) {
     val showDialog = remember { mutableStateOf(true) }
 
@@ -96,15 +95,16 @@ fun ShowCustomAlertDialog(
         val userDetails = if (response.data?.userDetails != null) {
             val details = response.data.userDetails
             buildString {
-                append(details.firstName ?: "Unknown")
+                append(details.firstName)
                 append(" ")
-                append(details.lastName ?: "")
+                append(details.lastName)
             }.trim()
         } else {
+
             null
         }
 
-        val isSuccess = response.success == true
+        val isSuccess = response.success
         val checkInOut = if (response.data?.isCheckIn == true) "checked in" else "checked out"
 
         val title = when {
@@ -119,16 +119,42 @@ fun ShowCustomAlertDialog(
             else -> "Attendance not taken. Please try again."
         }
 
+        if (response.error != null) {
+            CustomAlertDialog(
+                title = "Attendance Failed",
+                message = response.error.message ?: "Unknown error occurred",
+                userDetails = null,
+                imageResId = R.drawable.correct // or an error icon
+            )
+        } else {
         CustomAlertDialog(
             title = title,
             message = message,
             userDetails = userDetails,
             imageResId = if (isSuccess && userDetails != null) R.drawable.check else R.drawable.correct,
-
-
-        )
+            )
+        }
     }
 }
+
+
+@Composable
+fun ShowCustomNotFoundAlertDialog(
+) {
+    val showDialog = remember { mutableStateOf(true) }
+    if (showDialog.value) {
+
+        CustomAlertDialog(
+            title = "Face Not Detected",
+            message = "Face was not found. Please try again.",
+            userDetails = "",
+            imageResId = R.drawable.correct,
+
+
+            )
+    }
+}
+
 
 //@Composable
 //fun ShowCustomAlertDialog(
